@@ -5,179 +5,193 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
+if playerGui:FindFirstChild("LoginSystem") then
+    playerGui:FindFirstChild("LoginSystem"):Destroy()
+end
+if playerGui:FindFirstChild("Desktop") then
+    playerGui:FindFirstChild("Desktop"):Destroy()
+end
+
+local secondGui = nil
+local explorerWindow = nil
+local taskbarButtons = {}
+
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "KeySystem"
+screenGui.Name = "LoginSystem"
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
-local mainFrame = Instance.new("Frame")
-mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 400, 0, 280)
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -140)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-mainFrame.BorderSizePixel = 0
-mainFrame.ClipsDescendants = true
-mainFrame.Parent = screenGui
+local background = Instance.new("Frame")
+background.Name = "Background"
+background.Size = UDim2.new(2, 0, 2, 0)
+background.Position = UDim2.new(-0.5, 0, -0.5, 0)
+background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+background.BackgroundTransparency = 0.3
+background.BorderSizePixel = 0
+background.Parent = screenGui
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 8)
-corner.Parent = mainFrame
+local loginFrame = Instance.new("Frame")
+loginFrame.Name = "LoginFrame"
+loginFrame.Size = UDim2.new(0, 500, 0, 350)
+loginFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
+loginFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+loginFrame.BorderSizePixel = 0
+loginFrame.ClipsDescendants = true
+loginFrame.Parent = screenGui
 
-local topBar = Instance.new("Frame")
-topBar.Name = "TopBar"
-topBar.Size = UDim2.new(1, 0, 0, 40)
-topBar.Position = UDim2.new(0, 0, 0, 0)
-topBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-topBar.BorderSizePixel = 0
-topBar.Parent = mainFrame
+local shadow = Instance.new("ImageLabel")
+shadow.Name = "Shadow"
+shadow.Size = UDim2.new(1, 10, 1, 10)
+shadow.Position = UDim2.new(0, -5, 0, -5)
+shadow.BackgroundTransparency = 1
+shadow.Image = "rbxassetid://5554236805"
+shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+shadow.ImageTransparency = 0.7
+shadow.ScaleType = Enum.ScaleType.Slice
+shadow.SliceCenter = Rect.new(23, 23, 277, 277)
+shadow.Parent = loginFrame
 
-local topBarCorner = Instance.new("UICorner")
-topBarCorner.CornerRadius = UDim.new(0, 8)
-topBarCorner.Parent = topBar
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Size = UDim2.new(1, 0, 0, 35)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = loginFrame
 
-local leftText = Instance.new("TextLabel")
-leftText.Name = "LeftText"
-leftText.Size = UDim2.new(1, 0, 1, 0)
-leftText.Position = UDim2.new(0, 0, 0, 0)
-leftText.BackgroundTransparency = 1
-leftText.Text = "Neysonov Hub"
-leftText.TextColor3 = Color3.fromRGB(255, 255, 255)
-leftText.TextSize = 14
-leftText.Font = Enum.Font.GothamSemibold
-leftText.TextXAlignment = Enum.TextXAlignment.Left
-leftText.Parent = topBar
+local titleText = Instance.new("TextLabel")
+titleText.Name = "TitleText"
+titleText.Size = UDim2.new(1, -60, 1, 0)
+titleText.Position = UDim2.new(0, 0, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Text = "Neysonov Hub - Вход в систему"
+titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleText.TextSize = 14
+titleText.Font = Enum.Font.SourceSansBold
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+titleText.Parent = titleBar
 
-local leftPadding = Instance.new("UIPadding")
-leftPadding.PaddingLeft = UDim.new(0, 15)
-leftPadding.Parent = leftText
-
-local rightText = Instance.new("TextLabel")
-rightText.Name = "RightText"
-rightText.Size = UDim2.new(0.5, 0, 1, 0)
-rightText.Position = UDim2.new(0.5, 0, 0, 0)
-rightText.BackgroundTransparency = 1
-rightText.Text = ""
-rightText.TextColor3 = Color3.fromRGB(200, 200, 200)
-rightText.TextSize = 12
-rightText.Font = Enum.Font.Gotham
-rightText.TextXAlignment = Enum.TextXAlignment.Right
-rightText.Parent = topBar
-
-local rightPadding = Instance.new("UIPadding")
-rightPadding.PaddingRight = UDim.new(0, 15)
-rightPadding.Parent = rightText
+local titlePadding = Instance.new("UIPadding")
+titlePadding.PaddingLeft = UDim.new(0, 15)
+titlePadding.Parent = titleText
 
 local closeButton = Instance.new("TextButton")
 closeButton.Name = "CloseButton"
 closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -35, 0, 5)
-closeButton.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
-closeButton.BorderSizePixel = 0
-closeButton.Text = "X"
+closeButton.Position = UDim2.new(1, -35, 0, 2)
+closeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+closeButton.BorderSizePixel = 1
+closeButton.BorderColor3 = Color3.fromRGB(100, 100, 100)
+closeButton.Text = "×"
 closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.TextSize = 14
-closeButton.Font = Enum.Font.GothamBold
-closeButton.Parent = topBar
-
-local closeCorner = Instance.new("UICorner")
-closeCorner.CornerRadius = UDim.new(0, 6)
-closeCorner.Parent = closeButton
+closeButton.TextSize = 18
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.Parent = titleBar
 
 local contentFrame = Instance.new("Frame")
 contentFrame.Name = "ContentFrame"
-contentFrame.Size = UDim2.new(1, -30, 1, -70)
-contentFrame.Position = UDim2.new(0, 15, 0, 50)
+contentFrame.Size = UDim2.new(1, -40, 1, -60)
+contentFrame.Position = UDim2.new(0, 20, 0, 45)
 contentFrame.BackgroundTransparency = 1
-contentFrame.Parent = mainFrame
+contentFrame.Parent = loginFrame
 
-local title = Instance.new("TextLabel")
-title.Name = "Title"
-title.Size = UDim2.new(1, 0, 0, 30)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.BackgroundTransparency = 1
-title.Text = "Введите ключ для доступа"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 16
-title.Font = Enum.Font.GothamSemibold
-title.Parent = contentFrame
+local welcomeText = Instance.new("TextLabel")
+welcomeText.Name = "WelcomeText"
+welcomeText.Size = UDim2.new(1, 0, 0, 50)
+welcomeText.Position = UDim2.new(0, 0, 0, 0)
+welcomeText.BackgroundTransparency = 1
+welcomeText.Text = "Добро пожаловать в Neysonov Hub"
+welcomeText.TextColor3 = Color3.fromRGB(255, 255, 255)
+welcomeText.TextSize = 20
+welcomeText.Font = Enum.Font.SourceSansBold
+welcomeText.Parent = contentFrame
+
+local keyLabel = Instance.new("TextLabel")
+keyLabel.Name = "KeyLabel"
+keyLabel.Size = UDim2.new(1, 0, 0, 25)
+keyLabel.Position = UDim2.new(0, 0, 0, 60)
+keyLabel.BackgroundTransparency = 1
+keyLabel.Text = "Введите ключ доступа:"
+keyLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+keyLabel.TextSize = 14
+keyLabel.Font = Enum.Font.SourceSans
+keyLabel.TextXAlignment = Enum.TextXAlignment.Left
+keyLabel.Parent = contentFrame
 
 local textBox = Instance.new("TextBox")
 textBox.Name = "KeyTextBox"
 textBox.Size = UDim2.new(1, 0, 0, 40)
-textBox.Position = UDim2.new(0, 0, 0, 40)
-textBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-textBox.BorderSizePixel = 0
-textBox.PlaceholderText = "Введите ключ здесь..."
+textBox.Position = UDim2.new(0, 0, 0, 90)
+textBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+textBox.BorderSizePixel = 1
+textBox.BorderColor3 = Color3.fromRGB(100, 100, 100)
+textBox.PlaceholderText = "Введите ключ доступа..."
 textBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
 textBox.Text = ""
 textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-textBox.TextSize = 14
-textBox.Font = Enum.Font.Gotham
+textBox.TextSize = 16
+textBox.Font = Enum.Font.SourceSans
 textBox.ClearTextOnFocus = false
 textBox.Parent = contentFrame
 
-local textBoxCorner = Instance.new("UICorner")
-textBoxCorner.CornerRadius = UDim.new(0, 6)
-textBoxCorner.Parent = textBox
-
 local textBoxPadding = Instance.new("UIPadding")
-textBoxPadding.PaddingLeft = UDim.new(0, 10)
-textBoxPadding.PaddingRight = UDim.new(0, 10)
+textBoxPadding.PaddingLeft = UDim.new(0, 12)
+textBoxPadding.PaddingRight = UDim.new(0, 12)
 textBoxPadding.Parent = textBox
 
 local messageText = Instance.new("TextLabel")
 messageText.Name = "MessageText"
-messageText.Size = UDim2.new(1, 0, 0, 20)
-messageText.Position = UDim2.new(0, 0, 0, 85)
+messageText.Size = UDim2.new(1, 0, 0, 25)
+messageText.Position = UDim2.new(0, 0, 0, 135)
 messageText.BackgroundTransparency = 1
 messageText.Text = ""
-messageText.TextColor3 = Color3.fromRGB(255, 80, 80)
+messageText.TextColor3 = Color3.fromRGB(255, 100, 100)
 messageText.TextSize = 12
-messageText.Font = Enum.Font.Gotham
+messageText.Font = Enum.Font.SourceSans
 messageText.TextXAlignment = Enum.TextXAlignment.Center
 messageText.Parent = contentFrame
 
-local checkButton = Instance.new("TextButton")
-checkButton.Name = "CheckButton"
-checkButton.Size = UDim2.new(1, 0, 0, 40)
-checkButton.Position = UDim2.new(0, 0, 0, 110)
-checkButton.BackgroundColor3 = Color3.fromRGB(80, 120, 255)
-checkButton.BorderSizePixel = 0
-checkButton.Text = "Проверить"
-checkButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-checkButton.TextSize = 14
-checkButton.Font = Enum.Font.GothamSemibold
-checkButton.Parent = contentFrame
+local buttonsContainer = Instance.new("Frame")
+buttonsContainer.Name = "ButtonsContainer"
+buttonsContainer.Size = UDim2.new(1, 0, 0, 40)
+buttonsContainer.Position = UDim2.new(0, 0, 0, 170)
+buttonsContainer.BackgroundTransparency = 1
+buttonsContainer.Parent = contentFrame
 
-local checkButtonCorner = Instance.new("UICorner")
-checkButtonCorner.CornerRadius = UDim.new(0, 6)
-checkButtonCorner.Parent = checkButton
+local loginButton = Instance.new("TextButton")
+loginButton.Name = "LoginButton"
+loginButton.Size = UDim2.new(0.48, 0, 1, 0)
+loginButton.Position = UDim2.new(0, 0, 0, 0)
+loginButton.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+loginButton.BorderSizePixel = 0
+loginButton.Text = "Войти"
+loginButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+loginButton.TextSize = 14
+loginButton.Font = Enum.Font.SourceSansBold
+loginButton.Parent = buttonsContainer
 
 local getKeyButton = Instance.new("TextButton")
 getKeyButton.Name = "GetKeyButton"
-getKeyButton.Size = UDim2.new(1, 0, 0, 40)
-getKeyButton.Position = UDim2.new(0, 0, 0, 160)
+getKeyButton.Size = UDim2.new(0.48, 0, 1, 0)
+getKeyButton.Position = UDim2.new(0.52, 0, 0, 0)
 getKeyButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-getKeyButton.BorderSizePixel = 0
+getKeyButton.BorderSizePixel = 1
+getKeyButton.BorderColor3 = Color3.fromRGB(100, 100, 100)
 getKeyButton.Text = "Получить ключ"
 getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-getKeyButton.TextSize = 14
-getKeyButton.Font = Enum.Font.GothamSemibold
-getKeyButton.Parent = contentFrame
-
-local getKeyButtonCorner = Instance.new("UICorner")
-getKeyButtonCorner.CornerRadius = UDim.new(0, 6)
-getKeyButtonCorner.Parent = getKeyButton
+getKeyButton.TextSize = 13
+getKeyButton.Font = Enum.Font.SourceSans
+getKeyButton.Parent = buttonsContainer
 
 local function fadeIn()
-    mainFrame.Size = UDim2.new(0, 0, 0, 0)
-    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    mainFrame.BackgroundTransparency = 1
+    loginFrame.Size = UDim2.new(0, 0, 0, 0)
+    loginFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    loginFrame.BackgroundTransparency = 1
     
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    local tween = TweenService:Create(mainFrame, tweenInfo, {
-        Size = UDim2.new(0, 400, 0, 280),
-        Position = UDim2.new(0.5, -200, 0.5, -140),
+    local tweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(loginFrame, tweenInfo, {
+        Size = UDim2.new(0, 500, 0, 350),
+        Position = UDim2.new(0.5, -250, 0.5, -175),
         BackgroundTransparency = 0
     })
     
@@ -185,8 +199,8 @@ local function fadeIn()
 end
 
 local function fadeOut(callback)
-    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    local tween = TweenService:Create(mainFrame, tweenInfo, {
+    local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(loginFrame, tweenInfo, {
         Size = UDim2.new(0, 0, 0, 0),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         BackgroundTransparency = 1
@@ -200,200 +214,124 @@ local function fadeOut(callback)
     end)
 end
 
-local function createSecondGui()
-    local secondGui = Instance.new("ScreenGui")
-    secondGui.Name = "ScriptsHub"
-    secondGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    secondGui.Parent = playerGui
+local function addToTaskbar(window, title)
+    if not secondGui then return end
     
-    local mainFrame2 = Instance.new("Frame")
-    mainFrame2.Name = "MainFrame"
-    mainFrame2.Size = UDim2.new(0, 550, 0, 450)
-    mainFrame2.Position = UDim2.new(0.5, -275, 0.5, -225)
-    mainFrame2.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    mainFrame2.BorderSizePixel = 0
-    mainFrame2.Parent = secondGui
+    local taskbar = secondGui:FindFirstChild("Taskbar")
+    if not taskbar then return end
     
-    local corner2 = Instance.new("UICorner")
-    corner2.CornerRadius = UDim.new(0, 8)
-    corner2.Parent = mainFrame2
+    local taskbarButton = Instance.new("TextButton")
+    taskbarButton.Name = title .. "TaskbarButton"
+    taskbarButton.Size = UDim2.new(0, 150, 0, 40)
+    taskbarButton.Position = UDim2.new(0, #taskbarButtons * 160, 0, 5)
+    taskbarButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    taskbarButton.BorderSizePixel = 1
+    taskbarButton.BorderColor3 = Color3.fromRGB(100, 100, 100)
+    taskbarButton.Text = title
+    taskbarButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    taskbarButton.TextSize = 12
+    taskbarButton.Font = Enum.Font.SourceSans
+    taskbarButton.Parent = taskbar
+    
+    taskbarButton.MouseButton1Click:Connect(function()
+        if window and window.Parent then
+            window.Visible = not window.Visible
+            if window.Visible then
+                taskbarButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+            else
+                taskbarButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            end
+        end
+    end)
+    
+    taskbarButtons[title] = {
+        button = taskbarButton,
+        window = window
+    }
+    
+    return taskbarButton
+end
 
-    local topBar2 = Instance.new("Frame")
-    topBar2.Name = "TopBar"
-    topBar2.Size = UDim2.new(1, 0, 0, 40)
-    topBar2.Position = UDim2.new(0, 0, 0, 0)
-    topBar2.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    topBar2.BorderSizePixel = 0
-    topBar2.Parent = mainFrame2
+local function removeFromTaskbar(title)
+    if taskbarButtons[title] then
+        if taskbarButtons[title].button and taskbarButtons[title].button.Parent then
+            taskbarButtons[title].button:Destroy()
+        end
+        taskbarButtons[title] = nil
+    end
+end
+
+local function createWindow(title, contentCallback)
+    local window = Instance.new("Frame")
+    window.Name = title .. "Window"
+    window.Size = UDim2.new(0, 600, 0, 500)
+    window.Position = UDim2.new(0.5, -300, 0.5, -250)
+    window.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    window.BorderSizePixel = 0
+    window.ClipsDescendants = true
+    window.Parent = secondGui
     
-    local topBar2Corner = Instance.new("UICorner")
-    topBar2Corner.CornerRadius = UDim.new(0, 8)
-    topBar2Corner.Parent = topBar2
+    local windowShadow = Instance.new("ImageLabel")
+    windowShadow.Name = "Shadow"
+    windowShadow.Size = UDim2.new(1, 10, 1, 10)
+    windowShadow.Position = UDim2.new(0, -5, 0, -5)
+    windowShadow.BackgroundTransparency = 1
+    windowShadow.Image = "rbxassetid://5554236805"
+    windowShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    windowShadow.ImageTransparency = 0.7
+    windowShadow.ScaleType = Enum.ScaleType.Slice
+    windowShadow.SliceCenter = Rect.new(23, 23, 277, 277)
+    windowShadow.Parent = window
     
-    local title2 = Instance.new("TextLabel")
-    title2.Name = "Title"
-    title2.Size = UDim2.new(1, -80, 1, 0)
-    title2.Position = UDim2.new(0, 0, 0, 0)
-    title2.BackgroundTransparency = 1
-    title2.Text = "Neysonov Hub"
-    title2.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title2.TextSize = 16
-    title2.Font = Enum.Font.GothamSemibold
-    title2.TextXAlignment = Enum.TextXAlignment.Left
-    title2.Parent = topBar2
+    local titleBar = Instance.new("Frame")
+    titleBar.Name = "TitleBar"
+    titleBar.Size = UDim2.new(1, 0, 0, 35)
+    titleBar.Position = UDim2.new(0, 0, 0, 0)
+    titleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    titleBar.BorderSizePixel = 0
+    titleBar.Parent = window
+    
+    local titleText = Instance.new("TextLabel")
+    titleText.Name = "TitleText"
+    titleText.Size = UDim2.new(1, -60, 1, 0)
+    titleText.Position = UDim2.new(0, 0, 0, 0)
+    titleText.BackgroundTransparency = 1
+    titleText.Text = title
+    titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleText.TextSize = 14
+    titleText.Font = Enum.Font.SourceSansBold
+    titleText.TextXAlignment = Enum.TextXAlignment.Left
+    titleText.Parent = titleBar
     
     local titlePadding = Instance.new("UIPadding")
     titlePadding.PaddingLeft = UDim.new(0, 15)
-    titlePadding.Parent = title2
+    titlePadding.Parent = titleText
     
-    local closeButton2 = Instance.new("TextButton")
-    closeButton2.Name = "CloseButton"
-    closeButton2.Size = UDim2.new(0, 30, 0, 30)
-    closeButton2.Position = UDim2.new(1, -35, 0, 5)
-    closeButton2.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
-    closeButton2.BorderSizePixel = 0
-    closeButton2.Text = "X"
-    closeButton2.TextColor3 = Color3.fromRGB(255, 255, 255)
-    closeButton2.TextSize = 14
-    closeButton2.Font = Enum.Font.GothamBold
-    closeButton2.Parent = topBar2
-    
-    local closeCorner2 = Instance.new("UICorner")
-    closeCorner2.CornerRadius = UDim.new(0, 6)
-    closeCorner2.Parent = closeButton2
+    local closeButton = Instance.new("TextButton")
+    closeButton.Name = "CloseButton"
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -35, 0, 2)
+    closeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    closeButton.BorderSizePixel = 1
+    closeButton.BorderColor3 = Color3.fromRGB(100, 100, 100)
+    closeButton.Text = "×"
+    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeButton.TextSize = 18
+    closeButton.Font = Enum.Font.SourceSansBold
+    closeButton.Parent = titleBar
     
     local contentArea = Instance.new("Frame")
     contentArea.Name = "ContentArea"
-    contentArea.Size = UDim2.new(1, 0, 1, -40)
-    contentArea.Position = UDim2.new(0, 0, 0, 40)
+    contentArea.Size = UDim2.new(1, -20, 1, -45)
+    contentArea.Position = UDim2.new(0, 10, 0, 45)
     contentArea.BackgroundTransparency = 1
-    contentArea.Parent = mainFrame2
+    contentArea.Parent = window
     
-    local sidebar = Instance.new("Frame")
-    sidebar.Name = "Sidebar"
-    sidebar.Size = UDim2.new(0, 150, 1, 0)
-    sidebar.Position = UDim2.new(0, 0, 0, 0)
-    sidebar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    sidebar.BorderSizePixel = 0
-    sidebar.Parent = contentArea
-    
-    local sidebarCorner = Instance.new("UICorner")
-    sidebarCorner.CornerRadius = UDim.new(0, 8)
-    sidebarCorner.Parent = sidebar
-    
-    local scriptsArea = Instance.new("Frame")
-    scriptsArea.Name = "ScriptsArea"
-    scriptsArea.Size = UDim2.new(1, -150, 1, 0)
-    scriptsArea.Position = UDim2.new(0, 150, 0, 0)
-    scriptsArea.BackgroundTransparency = 1
-    scriptsArea.Parent = contentArea
-    
-    local mainCategory = Instance.new("TextButton")
-    mainCategory.Name = "MainCategory"
-    mainCategory.Size = UDim2.new(1, -10, 0, 40)
-    mainCategory.Position = UDim2.new(0, 5, 0, 10)
-    mainCategory.BackgroundColor3 = Color3.fromRGB(80, 120, 255)
-    mainCategory.BorderSizePixel = 0
-    mainCategory.Text = "Main"
-    mainCategory.TextColor3 = Color3.fromRGB(255, 255, 255)
-    mainCategory.TextSize = 14
-    mainCategory.Font = Enum.Font.GothamSemibold
-    mainCategory.Parent = sidebar
-    
-    local mainCategoryCorner = Instance.new("UICorner")
-    mainCategoryCorner.CornerRadius = UDim.new(0, 6)
-    mainCategoryCorner.Parent = mainCategory
-    
-    local scriptsContainer = Instance.new("ScrollingFrame")
-    scriptsContainer.Name = "ScriptsContainer"
-    scriptsContainer.Size = UDim2.new(1, -10, 1, -10)
-    scriptsContainer.Position = UDim2.new(0, 5, 0, 5)
-    scriptsContainer.BackgroundTransparency = 1
-    scriptsContainer.BorderSizePixel = 0
-    scriptsContainer.ScrollBarThickness = 6
-    scriptsContainer.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 100)
-    scriptsContainer.Visible = true
-    scriptsContainer.Parent = scriptsArea
-    
-    local scriptsLayout = Instance.new("UIListLayout")
-    scriptsLayout.Name = "ScriptsLayout"
-    scriptsLayout.Padding = UDim.new(0, 8)
-    scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    scriptsLayout.Parent = scriptsContainer
-    
-    local scripts = {
-        {
-            name = "Aim+Esp",
-            url = "https://raw.githubusercontent.com/agresiv111/script/refs/heads/main/main.lua"
-        },
-        {
-            name = "Fly+Invisible(Activate E and R)",
-            url = "https://pastebin.com/raw/HqwA3UdK"
-        },
-        {
-            name = "Friday Funkin",
-            url = "https://raw.githubusercontent.com/InfernusScripts/Fire-Hub/main/Loader"
-        },
-        {
-            name = "Hitboxes",
-            url = "https://raw.githubusercontent.com/Ranzesd/Hitboxes-Script/refs/heads/main/main"
-        },
-        {
-            name = "TSB",
-            url = "https://raw.githubusercontent.com/ATrainz/Phantasm/refs/heads/main/Games/TSB.lua"
-        },
-        {
-            name = "Ultimate Battlegrounds",
-            url = "https://eltonshub-loader.netlify.app/UBG1.lua"
-        }
-    }
-    
-    for i, scriptData in ipairs(scripts) do
-        local button = Instance.new("TextButton")
-        button.Name = scriptData.name .. "Button"
-        button.Size = UDim2.new(1, 0, 0, 35)
-        button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-        button.BorderSizePixel = 0
-        button.Text = scriptData.name
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        button.TextSize = 12
-        button.Font = Enum.Font.Gotham
-        button.Parent = scriptsContainer
-        
-        local buttonCorner = Instance.new("UICorner")
-        buttonCorner.CornerRadius = UDim.new(0, 6)
-        buttonCorner.Parent = button
-        
-        button.MouseButton1Click:Connect(function()
-            local originalText = button.Text
-            local originalColor = button.BackgroundColor3
-            
-            button.Text = "Загрузка..."
-            button.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
-            
-            local success, errorMessage = pcall(function()
-                loadstring(game:HttpGet(scriptData.url))()
-            end)
-            
-            if success then
-                button.Text = "Загружено!"
-                button.BackgroundColor3 = Color3.fromRGB(60, 180, 80)
-            else
-                button.Text = "Ошибка!"
-                button.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
-                warn("Ошибка загрузки скрипта " .. scriptData.name .. ": " .. tostring(errorMessage))
-            end
-            
-            wait(2)
-            button.Text = originalText
-            button.BackgroundColor3 = originalColor
-        end)
+    if contentCallback then
+        contentCallback(contentArea)
     end
     
-    scriptsContainer.CanvasSize = UDim2.new(0, 0, 0, scriptsLayout.AbsoluteContentSize.Y)
-    scriptsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        scriptsContainer.CanvasSize = UDim2.new(0, 0, 0, scriptsLayout.AbsoluteContentSize.Y)
-    end)
+    local taskbarButton = addToTaskbar(window, title)
     
     local dragging = false
     local dragInput
@@ -402,14 +340,24 @@ local function createSecondGui()
     
     local function update(input)
         local delta = input.Position - dragStart
-        mainFrame2.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        
+        local screenSize = workspace.CurrentCamera.ViewportSize
+        local windowBottom = newPos.Y.Offset + window.Size.Y.Offset
+        local taskbarTop = screenSize.Y - 50
+        
+        if windowBottom > taskbarTop then
+            newPos = UDim2.new(newPos.X.Scale, newPos.X.Offset, newPos.Y.Scale, taskbarTop - window.Size.Y.Offset)
+        end
+        
+        window.Position = newPos
     end
     
-    topBar2.InputBegan:Connect(function(input)
+    titleBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
-            startPos = mainFrame2.Position
+            startPos = window.Position
             
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
@@ -419,7 +367,7 @@ local function createSecondGui()
         end
     end)
     
-    topBar2.InputChanged:Connect(function(input)
+    titleBar.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement then
             dragInput = input
         end
@@ -431,9 +379,9 @@ local function createSecondGui()
         end
     end)
     
-    local function closeSecondGui()
+    closeButton.MouseButton1Click:Connect(function()
         local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local tween = TweenService:Create(mainFrame2, tweenInfo, {
+        local tween = TweenService:Create(window, tweenInfo, {
             Size = UDim2.new(0, 0, 0, 0),
             Position = UDim2.new(0.5, 0, 0.5, 0),
             BackgroundTransparency = 1
@@ -441,30 +389,302 @@ local function createSecondGui()
         
         tween:Play()
         tween.Completed:Connect(function()
-            secondGui:Destroy()
+            window:Destroy()
+            removeFromTaskbar(title)
+            if title == "Проводник" then
+                explorerWindow = nil
+            end
         end)
-    end
-    
-    closeButton2.MouseButton1Click:Connect(function()
-        closeSecondGui()
     end)
     
-    mainCategory.MouseButton1Click:Connect(function()
-        scriptsContainer.Visible = not scriptsContainer.Visible
-    end)
-    
-    mainFrame2.Size = UDim2.new(0, 0, 0, 0)
-    mainFrame2.Position = UDim2.new(0.5, 0, 0.5, 0)
-    mainFrame2.BackgroundTransparency = 1
+    window.Size = UDim2.new(0, 0, 0, 0)
+    window.Position = UDim2.new(0.5, 0, 0.5, 0)
+    window.BackgroundTransparency = 1
     
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    local tween = TweenService:Create(mainFrame2, tweenInfo, {
-        Size = UDim2.new(0, 550, 0, 450),
-        Position = UDim2.new(0.5, -275, 0.5, -225),
+    local tween = TweenService:Create(window, tweenInfo, {
+        Size = UDim2.new(0, 600, 0, 500),
+        Position = UDim2.new(0.5, -300, 0.5, -250),
         BackgroundTransparency = 0
     })
     
     tween:Play()
+    
+    return window
+end
+
+local function openExplorerWindow()
+    if explorerWindow and explorerWindow.Parent then
+        explorerWindow.Visible = true
+        if taskbarButtons["Проводник"] then
+            taskbarButtons["Проводник"].button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+        end
+        return
+    end
+    
+    explorerWindow = createWindow("Проводник", function(contentArea)
+        local scriptsContainer = Instance.new("ScrollingFrame")
+        scriptsContainer.Name = "ScriptsContainer"
+        scriptsContainer.Size = UDim2.new(1, 0, 1, 0)
+        scriptsContainer.Position = UDim2.new(0, 0, 0, 0)
+        scriptsContainer.BackgroundTransparency = 1
+        scriptsContainer.BorderSizePixel = 0
+        scriptsContainer.ScrollBarThickness = 6
+        scriptsContainer.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 100)
+        scriptsContainer.Parent = contentArea
+        
+        local mainFolderButton = Instance.new("TextButton")
+        mainFolderButton.Name = "MainFolderButton"
+        mainFolderButton.Size = UDim2.new(1, 0, 0, 30)
+        mainFolderButton.Position = UDim2.new(0, 0, 0, 0)
+        mainFolderButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        mainFolderButton.BorderSizePixel = 1
+        mainFolderButton.BorderColor3 = Color3.fromRGB(100, 100, 100)
+        mainFolderButton.Text = "📁 Main"
+        mainFolderButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        mainFolderButton.TextSize = 16
+        mainFolderButton.TextXAlignment = Enum.TextXAlignment.Left
+        mainFolderButton.Parent = scriptsContainer
+        
+        local mainFolderPadding = Instance.new("UIPadding")
+        mainFolderPadding.PaddingLeft = UDim.new(0, 10)
+        mainFolderPadding.Parent = mainFolderButton
+        
+        local scriptsGrid = Instance.new("Frame")
+        scriptsGrid.Name = "ButtonsGrid"
+        scriptsGrid.Size = UDim2.new(1, 0, 0, 300)
+        scriptsGrid.Position = UDim2.new(0, 0, 0, 40)
+        scriptsGrid.BackgroundTransparency = 1
+        scriptsGrid.Visible = false
+        scriptsGrid.Parent = scriptsContainer
+        
+        local gridLayout = Instance.new("UIGridLayout")
+        gridLayout.Name = "GridLayout"
+        gridLayout.CellSize = UDim2.new(0.48, 0, 0, 45)
+        gridLayout.CellPadding = UDim2.new(0.04, 0, 0, 12)
+        gridLayout.StartCorner = Enum.StartCorner.TopLeft
+        gridLayout.FillDirection = Enum.FillDirection.Horizontal
+        gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+        gridLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+        gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        gridLayout.Parent = scriptsGrid
+        
+        local scripts = {
+            {name = "AIM + ESP", url = "https://raw.githubusercontent.com/agresiv111/script/refs/heads/main/main.lua"},
+            {name = "FLY + INVISIBLE", url = "https://pastebin.com/raw/HqwA3UdK"},
+            {name = "FRIDAY FUNKIN", url = "https://raw.githubusercontent.com/InfernusScripts/Fire-Hub/main/Loader"},
+            {name = "HITBOXES", url = "https://raw.githubusercontent.com/Ranzesd/Hitboxes-Script/refs/heads/main/main"},
+            {name = "TSB", url = "https://raw.githubusercontent.com/ATrainz/Phantasm/refs/heads/main/Games/TSB.lua"},
+            {name = "ULTIMATE BATTLEGROUNDS", url = "https://eltonshub-loader.netlify.app/UBG1.lua"}
+        }
+        
+        for i, scriptData in ipairs(scripts) do
+            local button = Instance.new("TextButton")
+            button.Name = scriptData.name .. "Button"
+            button.LayoutOrder = i
+            button.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+            button.BorderSizePixel = 0
+            button.Text = scriptData.name .. ".lua"
+            button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            button.TextSize = 13
+            button.TextWrapped = true
+            button.Font = Enum.Font.SourceSansBold
+            button.Parent = scriptsGrid
+            
+            button.MouseButton1Click:Connect(function()
+                local originalText = button.Text
+                local originalColor = button.BackgroundColor3
+                
+                button.Text = "ЗАГРУЗКА..."
+                button.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
+                
+                local success, errorMessage = pcall(function()
+                    loadstring(game:HttpGet(scriptData.url, true))()
+                end)
+                
+                if success then
+                    button.Text = "ЗАГРУЖЕНО!"
+                    button.BackgroundColor3 = Color3.fromRGB(60, 180, 80)
+                else
+                    button.Text = "ОШИБКА!"
+                    button.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+                end
+                
+                wait(2)
+                button.Text = originalText
+                button.BackgroundColor3 = originalColor
+            end)
+        end
+        
+        scriptsContainer.CanvasSize = UDim2.new(0, 0, 0, 80)
+        
+        mainFolderButton.MouseButton1Click:Connect(function()
+            scriptsGrid.Visible = not scriptsGrid.Visible
+            if scriptsGrid.Visible then
+                scriptsContainer.CanvasSize = UDim2.new(0, 0, 0, 350)
+            else
+                scriptsContainer.CanvasSize = UDim2.new(0, 0, 0, 80)
+            end
+        end)
+    end)
+end
+
+local function createDesktop()
+    if secondGui and secondGui.Parent then
+        secondGui.Enabled = true
+        return
+    end
+    
+    secondGui = Instance.new("ScreenGui")
+    secondGui.Name = "Desktop"
+    secondGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    secondGui.Parent = playerGui
+    
+    local desktopBackground = Instance.new("Frame")
+    desktopBackground.Name = "DesktopBackground"
+    desktopBackground.Size = UDim2.new(2, 0, 2, 0)
+    desktopBackground.Position = UDim2.new(-0.5, 0, -0.5, 0)
+    desktopBackground.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    desktopBackground.BackgroundTransparency = 0.3
+    desktopBackground.BorderSizePixel = 0
+    desktopBackground.Parent = secondGui
+    
+    local taskbar = Instance.new("Frame")
+    taskbar.Name = "Taskbar"
+    taskbar.Size = UDim2.new(1, 0, 0, 50)
+    taskbar.Position = UDim2.new(0, 0, 1, -50)
+    taskbar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    taskbar.BorderSizePixel = 1
+    taskbar.BorderColor3 = Color3.fromRGB(80, 80, 80)
+    taskbar.ZIndex = 100
+    taskbar.Parent = secondGui
+    
+    local explorerIcon = Instance.new("TextButton")
+    explorerIcon.Name = "ExplorerIcon"
+    explorerIcon.Size = UDim2.new(0, 80, 0, 80)
+    explorerIcon.Position = UDim2.new(0, 100, 0, 100)
+    explorerIcon.BackgroundTransparency = 1
+    explorerIcon.Text = "📁"
+    explorerIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+    explorerIcon.TextSize = 50
+    explorerIcon.Font = Enum.Font.SourceSans
+    explorerIcon.Parent = desktopBackground
+
+    local explorerLabel = Instance.new("TextLabel")
+    explorerLabel.Name = "ExplorerLabel"
+    explorerLabel.Size = UDim2.new(1, 0, 0, 20)
+    explorerLabel.Position = UDim2.new(0, 0, 1, 0)
+    explorerLabel.BackgroundTransparency = 1
+    explorerLabel.Text = "Проводник"
+    explorerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    explorerLabel.TextSize = 14
+    explorerLabel.Font = Enum.Font.SourceSans
+    explorerLabel.TextXAlignment = Enum.TextXAlignment.Center
+    explorerLabel.Parent = explorerIcon
+    
+    local startButton = Instance.new("TextButton")
+    startButton.Name = "StartButton"
+    startButton.Size = UDim2.new(0, 50, 0, 40)
+    startButton.Position = UDim2.new(0, 10, 0, 5)
+    startButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    startButton.BorderSizePixel = 1
+    startButton.BorderColor3 = Color3.fromRGB(100, 100, 100)
+    startButton.Text = ""
+    startButton.Parent = taskbar
+    
+    local squaresContainer = Instance.new("Frame")
+    squaresContainer.Name = "SquaresContainer"
+    squaresContainer.Size = UDim2.new(1, 0, 1, 0)
+    squaresContainer.Position = UDim2.new(0, 0, 0, 0)
+    squaresContainer.BackgroundTransparency = 1
+    squaresContainer.Parent = startButton
+    
+    for i = 0, 1 do
+        for j = 0, 1 do
+            local square = Instance.new("Frame")
+            square.Name = "Square" .. (i * 2 + j + 1)
+            square.Size = UDim2.new(0.45, 0, 0.45, 0)
+            square.Position = UDim2.new(0.05 + j * 0.5, 0, 0.05 + i * 0.5, 0)
+            square.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            square.BorderSizePixel = 0
+            square.Parent = squaresContainer
+        end
+    end
+    
+    local startMenu = Instance.new("Frame")
+    startMenu.Name = "StartMenu"
+    startMenu.Size = UDim2.new(0, 200, 0, 120)
+    startMenu.Position = UDim2.new(0, 0, -1, -10)
+    startMenu.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    startMenu.BorderSizePixel = 1
+    startMenu.BorderColor3 = Color3.fromRGB(100, 100, 100)
+    startMenu.Visible = false
+    startMenu.Parent = startButton
+    
+    local openExplorerBtn = Instance.new("TextButton")
+    openExplorerBtn.Name = "OpenExplorerBtn"
+    openExplorerBtn.Size = UDim2.new(1, -10, 0, 40)
+    openExplorerBtn.Position = UDim2.new(0, 5, 0, 10)
+    openExplorerBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    openExplorerBtn.BorderSizePixel = 0
+    openExplorerBtn.Text = "Открыть проводник"
+    openExplorerBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    openExplorerBtn.TextSize = 14
+    openExplorerBtn.Font = Enum.Font.SourceSans
+    openExplorerBtn.Parent = startMenu
+    
+    local hideShowBtn = Instance.new("TextButton")
+    hideShowBtn.Name = "HideShowBtn"
+    hideShowBtn.Size = UDim2.new(1, -10, 0, 40)
+    hideShowBtn.Position = UDim2.new(0, 5, 0, 60)
+    hideShowBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    hideShowBtn.BorderSizePixel = 0
+    hideShowBtn.Text = "Скрыть/Показать (K)"
+    hideShowBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    hideShowBtn.TextSize = 14
+    hideShowBtn.Font = Enum.Font.SourceSans
+    hideShowBtn.Parent = startMenu
+    
+    openExplorerBtn.MouseButton1Click:Connect(function()
+        openExplorerWindow()
+        startMenu.Visible = false
+    end)
+    
+    hideShowBtn.MouseButton1Click:Connect(function()
+        if secondGui then
+            secondGui.Enabled = not secondGui.Enabled
+        end
+        startMenu.Visible = false
+    end)
+    
+    startButton.MouseButton1Click:Connect(function()
+        startMenu.Visible = not startMenu.Visible
+    end)
+    
+    explorerIcon.MouseButton1Click:Connect(function()
+        openExplorerWindow()
+    end)
+    
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if startMenu.Visible then
+                local mousePos = input.Position
+                local startMenuAbsPos = startMenu.AbsolutePosition
+                local startMenuSize = startMenu.AbsoluteSize
+                local startButtonAbsPos = startButton.AbsolutePosition
+                local startButtonSize = startButton.AbsoluteSize
+                
+                if not (mousePos.X >= startMenuAbsPos.X and mousePos.X <= startMenuAbsPos.X + startMenuSize.X and
+                       mousePos.Y >= startMenuAbsPos.Y and mousePos.Y <= startMenuAbsPos.Y + startMenuSize.Y) and
+                   not (mousePos.X >= startButtonAbsPos.X and mousePos.X <= startButtonAbsPos.X + startButtonSize.X and
+                       mousePos.Y >= startButtonAbsPos.Y and mousePos.Y <= startButtonAbsPos.Y + startButtonSize.Y) then
+                    startMenu.Visible = false
+                end
+            end
+        end
+    end)
 end
 
 local function showMessage(text, color)
@@ -484,25 +704,25 @@ closeButton.MouseButton1Click:Connect(function()
     end)
 end)
 
-checkButton.MouseButton1Click:Connect(function()
+loginButton.MouseButton1Click:Connect(function()
     local enteredKey = textBox.Text
     
     if enteredKey == "neysonovkeyloader134256" then
-        showMessage("Ключ верный! Открываем доступ...", Color3.fromRGB(80, 255, 80))
+        showMessage("Успешный вход! Загружаем рабочий стол...", Color3.fromRGB(100, 255, 100))
         
         wait(1)
         fadeOut(function()
             screenGui:Destroy()
-            createSecondGui()
+            createDesktop()
         end)
     else
-        showMessage("Неверный ключ", Color3.fromRGB(255, 80, 80))
+        showMessage("Неверный ключ доступа", Color3.fromRGB(255, 100, 100))
         
         local originalPosition = textBox.Position
         for i = 1, 3 do
-            textBox.Position = UDim2.new(0, 5, 0, 40)
+            textBox.Position = UDim2.new(0, 5, 0, 90)
             wait(0.05)
-            textBox.Position = UDim2.new(0, -5, 0, 40)
+            textBox.Position = UDim2.new(0, -5, 0, 90)
             wait(0.05)
         end
         textBox.Position = originalPosition
@@ -515,23 +735,33 @@ getKeyButton.MouseButton1Click:Connect(function()
     local originalText = getKeyButton.Text
     local originalColor = getKeyButton.BackgroundColor3
     
-    getKeyButton.Text = "Успешно!"
+    getKeyButton.Text = "Скопировано!"
     getKeyButton.BackgroundColor3 = Color3.fromRGB(60, 180, 80)
+    getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     
-    showMessage("Ссылка скопирована в буфер обмена", Color3.fromRGB(80, 180, 255))
+    showMessage("Discord ссылка скопирована в буфер обмена", Color3.fromRGB(100, 180, 255))
     
     delay(2, function()
         getKeyButton.Text = originalText
         getKeyButton.BackgroundColor3 = originalColor
+        getKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     end)
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.KeyCode == Enum.KeyCode.K then
+        if secondGui then
+            secondGui.Enabled = not secondGui.Enabled
+        end
+    end
 end)
 
 fadeIn()
 
-local connection
-connection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if input.KeyCode == Enum.KeyCode.Escape and not gameProcessed then
-        connection:Disconnect()
         fadeOut(function()
             screenGui:Destroy()
         end)
